@@ -10,15 +10,16 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 
-    <!-- Hoja de Estilos Custom -->
-    <link rel="stylesheet" href="/css/style.css">
+    <!-- Hoja de Estilos - RUTA CORREGIDA PARA GITHUB -->
+    <link rel="stylesheet" href="./css/style.css">
 </head>
-<body>
+<body class="bg-[#0a0a0a] text-white">
 
     <header class="fixed w-full z-[100] bg-[#0a0a0a]/90 backdrop-blur-md border-b border-white/10">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
-                <img src="/img/logo.png" alt="Foura Group Logo" class="h-10 w-auto object-contain">
+                <!-- LOGO - RUTA CORREGIDA -->
+                <img src="./img/logo.png" alt="Foura Group Logo" class="h-10 w-auto object-contain" onerror="this.src='https://placehold.co/200x50/111/fff?text=Foura+Group'">
                 <span class="text-xl font-black tracking-tighter uppercase">Foura <span class="text-blue-600">Group E.I.R.L</span></span>
             </div>
             
@@ -36,10 +37,10 @@
 
     <!-- VISTA 1: HOME -->
     <main id="view-home" class="page-view">
-        <section class="relative min-h-[70vh] flex items-center pt-32 pb-20 overflow-hidden dot-grid">
+        <section class="relative min-h-[70vh] flex items-center pt-32 pb-20 overflow-hidden">
             <div class="container mx-auto px-6 relative z-10 text-center">
                 <h1 class="text-6xl md:text-8xl font-black mb-6 leading-[0.9] tracking-tighter uppercase">
-                    FOURA <span class="text-outline">GROUP</span>
+                    FOURA <span class="text-blue-600">GROUP</span>
                 </h1>
                 <p class="text-gray-400 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
                     Especialistas en <span class="text-white font-semibold">Automatización y Suministros Industriales</span> de alta precisión.
@@ -50,24 +51,17 @@
             </div>
         </section>
 
-        <section id="destacados" class="py-24 bg-[#0f0f0f] relative overflow-hidden border-y border-white/5">
-            <div class="container mx-auto px-6 relative">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
-                    <h2 class="text-3xl font-black uppercase tracking-tighter flex items-center gap-4">
-                        <span class="w-10 h-1 bg-blue-600"></span> Equipos Destacados
-                    </h2>
+        <section id="destacados" class="py-24 bg-[#0f0f0f] border-y border-white/5">
+            <div class="container mx-auto px-6">
+                <div class="flex justify-between items-center mb-12">
+                    <h2 class="text-3xl font-black uppercase tracking-tighter">Equipos Destacados</h2>
                     <div class="flex gap-2">
-                        <button onclick="slidePrev()" class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-blue-600 transition-all">
-                            <i class="fa-solid fa-chevron-left"></i>
-                        </button>
-                        <button onclick="slideNext()" class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-blue-600 transition-all">
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </button>
+                        <button onclick="slidePrev()" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-blue-600"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button onclick="slideNext()" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-blue-600"><i class="fa-solid fa-chevron-right"></i></button>
                     </div>
                 </div>
-
                 <div class="overflow-hidden">
-                    <div id="destacados-slider" class="slider-container">
+                    <div id="destacados-slider" class="flex gap-6 transition-transform duration-500">
                         <!-- JS Dinámico -->
                     </div>
                 </div>
@@ -75,96 +69,41 @@
         </section>
     </main>
 
-    <!-- VISTA 2: CATÁLOGO COMPLETO -->
-    <main id="view-catalog" class="page-view hidden-view min-h-screen pt-32 pb-20">
+    <!-- VISTA 2: CATÁLOGO -->
+    <main id="view-catalog" class="page-view hidden transition-opacity duration-300 min-h-screen pt-32 pb-20">
         <div class="container mx-auto px-6">
-            <div class="flex flex-col mb-12 border-b border-white/10 pb-10">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-10">
-                    <div>
-                        <button onclick="navigateTo('home')" class="text-blue-500 font-bold text-xs uppercase tracking-widest mb-4 flex items-center gap-2 hover:translate-x-[-5px] transition-transform">
-                            <i class="fa-solid fa-arrow-left"></i> Inicio
-                        </button>
-                        <h2 class="text-5xl font-black uppercase tracking-tighter">Nuestros <span class="text-blue-600">Productos</span></h2>
-                        <p class="text-gray-500 mt-2">Navega por nuestro inventario técnico especializado.</p>
-                    </div>
-                    <div class="relative w-full md:w-96">
-                        <input type="text" id="catalog-search" placeholder="Buscar por nombre o SKU..." 
-                               class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:outline-none focus:border-blue-600 transition-all text-sm">
-                        <i class="fa-solid fa-magnifying-glass absolute right-6 top-1/2 -translate-y-1/2 text-gray-500"></i>
-                    </div>
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                <div>
+                    <h2 class="text-5xl font-black uppercase tracking-tighter">Nuestros <span class="text-blue-600">Productos</span></h2>
+                    <p class="text-gray-500 mt-2">Inventario técnico especializado.</p>
                 </div>
-
-                <!-- Filtros dentro de la página de productos -->
-                <div class="flex flex-wrap gap-3 items-center">
-                    <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mr-4">Categorías:</span>
-                    <button onclick="updateCatalogFilter('all', this)" class="filter-btn active-filter catalog-cat-btn">Todos</button>
-                    <button onclick="updateCatalogFilter('electricidad', this)" class="filter-btn catalog-cat-btn">Electricidad & Control</button>
-                    <button onclick="updateCatalogFilter('mecanica', this)" class="filter-btn catalog-cat-btn">Mecánica Fluidos</button>
-                    <button onclick="updateCatalogFilter('herramientas', this)" class="filter-btn catalog-cat-btn">Herramientas Pro</button>
-                </div>
+                <input type="text" id="catalog-search" placeholder="Buscar SKU o nombre..." 
+                       class="bg-white/5 border border-white/10 rounded-xl py-3 px-6 w-full md:w-80">
             </div>
-
-            <div id="full-catalog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <div id="full-catalog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <!-- JS Dinámico -->
             </div>
         </div>
     </main>
 
-    <!-- FOOTER SIMPLIFICADO -->
-    <footer class="bg-[#050505] pt-20 pb-12 border-t border-white/5">
-        <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
-                <div>
-                    <div class="flex items-center gap-3 mb-6">
-                        <img src="/img/logo.png" alt="Foura Group Logo" class="h-8 w-auto object-contain">
-                        <span class="font-black tracking-tighter uppercase">Foura Group <span class="text-blue-600 text-[10px] ml-1">E.I.R.L</span></span>
-                    </div>
-                    <p class="text-gray-500 text-sm leading-relaxed">
-                        Ingeniería y suministros críticos para la industria nacional. Especialistas en optimización de procesos.
-                    </p>
-                </div>
-                <div>
-                    <h4 class="text-white font-bold uppercase mb-6 text-xs tracking-widest">Horario Operativo</h4>
-                    <p class="text-gray-500 text-xs">Lunes - Viernes: 08:00 AM - 18:00 PM</p>
-                    <p class="text-gray-500 text-xs mt-2">Lima, Perú</p>
-                </div>
-                <div>
-                    <h4 class="text-white font-bold uppercase mb-6 text-xs tracking-widest">Contacto Directo</h4>
-                    <button onclick="sendToWhatsApp()" class="text-blue-500 text-xs font-bold uppercase hover:text-white transition-colors">
-                        <i class="fa-brands fa-whatsapp mr-2"></i> Solicitar Asesoría Técnica
-                    </button>
-                </div>
-            </div>
-            <div class="text-center pt-8 border-t border-white/5">
-                <p class="text-gray-600 text-[10px] uppercase tracking-[0.4em]">© 2024 FOURA GROUP E.I.R.L - Ingeniería Industrial</p>
-            </div>
-        </div>
+    <!-- FOOTER -->
+    <footer class="bg-[#050505] py-12 border-t border-white/5 text-center">
+        <p class="text-gray-600 text-[10px] uppercase tracking-[0.4em]">© 2024 FOURA GROUP E.I.R.L - Ingeniería Industrial</p>
     </footer>
 
     <!-- CARRITO -->
     <div id="cart-drawer" class="fixed inset-0 z-[200] hidden">
-        <div class="absolute inset-0 bg-black/90 backdrop-blur-sm" onclick="toggleCart()"></div>
-        <div class="absolute right-0 top-0 h-full w-full max-w-lg bg-[#0f0f0f] p-8 flex flex-col border-l border-white/10">
-            <div class="flex justify-between items-center mb-10">
-                <h2 class="text-3xl font-black uppercase italic tracking-tighter">Cotización</h2>
-                <button onclick="toggleCart()" class="text-gray-500 hover:text-white transition-colors">
-                    <i class="fa-solid fa-xmark text-2xl"></i>
-                </button>
-            </div>
-            <div id="cart-items" class="flex-grow space-y-4 overflow-y-auto pr-2">
-                <!-- Se llena dinámicamente con JS -->
-            </div>
-            <div class="pt-8 border-t border-white/10 mt-6">
-                <button onclick="sendToWhatsApp()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-5 rounded-2xl font-bold uppercase tracking-widest flex items-center justify-center gap-4 transition-all shadow-lg shadow-blue-600/20">
-                    <i class="fa-brands fa-whatsapp text-xl"></i> Solicitar Cotización
-                </button>
-            </div>
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="toggleCart()"></div>
+        <div class="absolute right-0 top-0 h-full w-full max-w-md bg-[#0f0f0f] p-8 border-l border-white/10 flex flex-col">
+            <h2 class="text-2xl font-black mb-8">MI COTIZACIÓN</h2>
+            <div id="cart-items" class="flex-grow space-y-4 overflow-y-auto"></div>
+            <button onclick="sendToWhatsApp()" class="w-full bg-green-600 py-4 rounded-xl font-bold mt-6">
+                <i class="fa-brands fa-whatsapp mr-2"></i> Enviar a WhatsApp
+            </button>
         </div>
     </div>
 
-    <div id="toast">Producto agregado</div>
-
-    <!-- Script Custom -->
+    <!-- SCRIPT - RUTA CORREGIDA -->
     <script src="/js/script.js"></script>
 </body>
 </html>
