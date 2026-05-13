@@ -380,12 +380,18 @@ function sendToWhatsApp() {
     );
 }
 
-window.onload = () => {
-
+document.addEventListener('DOMContentLoaded', () => {
+    // Carga inicial de datos
     loadDestacados();
+    
+    // Si estamos en la vista de catálogo, renderizarlo también
+    if (document.getElementById('full-catalog-grid')) {
+        renderFullCatalog();
+    }
 
+    // Slider automático
     setInterval(slideNext, 5000);
-};
+});
 
 window.onresize = () => {
     updateSlider();
