@@ -29,7 +29,6 @@ function previewImage(event) {
 function addProduct(e) {
     e.preventDefault();
     
-    // Obtenemos los valores
     const name = document.getElementById('prod-name').value;
     const sku = document.getElementById('prod-sku').value;
     const cat = document.getElementById('prod-cat').value;
@@ -45,13 +44,13 @@ function addProduct(e) {
         sku: sku.toUpperCase(),
         category: cat,
         desc: desc,
-        image: tempImage
+        image: tempImage,
+        featured: true // <--- ¡ESTA ERA LA LÍNEA QUE FALTABA!
     };
 
     products.push(newProduct);
     localStorage.setItem('foura_catalog', JSON.stringify(products));
     
-    // Limpieza
     e.target.reset();
     tempImage = "";
     const preview = document.getElementById('prod-img-preview');

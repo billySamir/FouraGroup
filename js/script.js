@@ -10,7 +10,14 @@ const defaultProducts = [
 ];
 
 // Integración de almacenamiento para Administrador
-let products = JSON.parse(localStorage.getItem('foura_catalog')) || defaultProducts;
+let products = JSON.parse(localStorage.getItem('foura_catalog'));
+
+// Si no hay productos guardados, o si el arreglo quedó vacío por error, 
+// restauramos los productos por defecto inmediatamente.
+if (!products || products.length === 0) {
+    products = defaultProducts;
+    localStorage.setItem('foura_catalog', JSON.stringify(products));
+}
 let cart = [];
 let currentSlide = 0;
 let activeCatalogCat = 'all';
