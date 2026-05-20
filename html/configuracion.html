@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foura Group | Configuración de Cuenta</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="bg-[#0a0a0a] text-white min-h-screen flex flex-col dot-grid">
+
+    <header class="w-full bg-[#0a0a0a]/90 backdrop-blur-md border-b border-white/10 py-4 fixed top-0 z-[100]">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='inicio.html'">
+                <img src="../img/logo.png" alt="Foura Group Logo" class="h-10 w-auto object-contain" onerror="this.src='https://placehold.co/200x50/111/fff?text=Foura+Group'">
+                <span class="text-xl font-black tracking-tighter uppercase">Foura <span class="text-blue-600">Group</span></span>
+            </div>
+            <a href="inicio.html" class="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Volver a la Tienda
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 pt-32 pb-20 max-w-5xl">
+        
+        <div class="mb-10 bg-[#111111] p-8 rounded-2xl border border-white/5 flex items-center gap-6 shadow-xl">
+            <div class="relative group cursor-pointer" onclick="document.getElementById('profile-pic-upload').click()">
+                <img id="profile-img" src="https://ui-avatars.com/api/?name=Usuario&background=2563eb&color=fff" class="h-20 w-20 rounded-full object-cover border-2 border-blue-600 shadow-lg shadow-blue-600/20">
+                <div class="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <i class="fa-solid fa-camera text-white text-xl"></i>
+                </div>
+                <input type="file" id="profile-pic-upload" accept="image/*" class="hidden" onchange="uploadProfilePic(event)">
+            </div>
+            <div>
+                <h1 class="text-3xl font-black uppercase tracking-tighter">Mi <span class="text-blue-600">Perfil</span></h1>
+                <p class="text-gray-400 mt-1 text-sm">Gestiona tus datos, foto de perfil y credenciales.</p>
+            </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-8">
+            <div class="w-full md:w-1/4 space-y-3">
+                <button onclick="switchTab('datos')" id="tab-datos" class="w-full text-left px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-blue-600 text-white shadow-lg shadow-blue-600/20 border border-blue-500">
+                    <i class="fa-solid fa-id-card mr-3 text-lg"></i> Mis Datos
+                </button>
+                <button onclick="switchTab('seguridad')" id="tab-seguridad" class="w-full text-left px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/5">
+                    <i class="fa-solid fa-shield-halved mr-3 text-lg"></i> Seguridad
+                </button>
+            </div>
+
+            <div class="w-full md:w-3/4 bg-[#111111] p-8 rounded-2xl border border-white/5 shadow-2xl relative overflow-hidden">
+                <div id="panel-datos" class="block animate-fade-in">
+                    <h2 class="text-xl font-black mb-6 uppercase tracking-wider border-b border-white/10 pb-4 text-blue-500"><i class="fa-solid fa-user mr-2"></i> Información Personal</h2>
+                    
+                    <form onsubmit="updateProfile(event)" class="space-y-6 max-w-xl">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Nombre(s)</label>
+                                <input type="text" id="conf-name" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Apellidos</label>
+                                <input type="text" id="conf-lastname" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Correo Electrónico</label>
+                            <div class="flex gap-2">
+                                <input type="email" id="conf-email" disabled class="w-full bg-black/50 border border-white/5 rounded-xl py-3 px-4 text-sm text-gray-500 cursor-not-allowed">
+                                <button type="button" onclick="openEmailModal()" class="bg-blue-600/20 text-blue-500 border border-blue-500/30 hover:bg-blue-600 hover:text-white px-6 rounded-xl transition-colors text-xs font-bold uppercase tracking-widest">Cambiar</button>
+                            </div>
+                        </div>
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-blue-600/20 mt-4 flex items-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+                        </button>
+                    </form>
+                </div>
+
+                <div id="panel-seguridad" class="hidden animate-fade-in">
+                    <h2 class="text-xl font-black mb-6 uppercase tracking-wider border-b border-white/10 pb-4 text-red-500"><i class="fa-solid fa-lock mr-2"></i> Credenciales de Acceso</h2>
+                    <form onsubmit="updatePassword(event)" class="space-y-6 max-w-md">
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Nueva Contraseña</label>
+                            <input type="password" id="new-pass" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-red-500 transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Confirmar Nueva Contraseña</label>
+                            <input type="password" id="confirm-pass" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-red-500 transition-colors">
+                        </div>
+                        <button type="submit" class="bg-red-600 hover:bg-red-700 px-8 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-red-600/20 mt-4 flex items-center gap-2">
+                            <i class="fa-solid fa-key"></i> Actualizar Contraseña
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="email-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[300] hidden flex items-center justify-center animate-fade-in">
+        <div class="bg-[#111111] p-8 rounded-2xl border border-white/10 w-full max-w-sm relative shadow-2xl">
+            <button onclick="closeEmailModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h3 class="text-xl font-black text-white mb-2 uppercase tracking-tighter">Cambiar <span class="text-blue-500">Correo</span></h3>
+            <p class="text-xs text-gray-400 mb-6 leading-relaxed" id="email-modal-desc">Ingresa tu nuevo correo para enviarte un código de verificación.</p>
+            
+            <div id="step-1-email">
+                <input type="email" id="new-email-input" placeholder="nuevo@correo.com" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-blue-500 mb-4 transition-colors">
+                <button onclick="sendVerificationCode()" class="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-blue-600/20">Enviar Código</button>
+            </div>
+
+            <div id="step-2-code" class="hidden">
+                <input type="text" id="verify-code-input" placeholder="0000" maxlength="4" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-2xl text-white focus:outline-none focus:border-green-500 mb-4 text-center tracking-[1em] font-black transition-colors">
+                <button onclick="verifyAndChangeEmail()" class="w-full bg-green-600 hover:bg-green-700 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-green-600/20 mb-6">Verificar y Cambiar</button>
+                
+                <div class="text-center border-t border-white/10 pt-4">
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mb-2">¿No pudiste ver el código?</p>
+                    <button onclick="resendVerificationCode()" class="text-blue-500 hover:text-white text-xs font-bold transition-colors mx-auto">
+                        Reenviar código
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script src="../js/config.js"></script>
+</body>
+</html>

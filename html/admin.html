@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración | Foura Group</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="bg-[#050505] text-white min-h-screen">
+
+    <div class="container mx-auto px-6 py-12">
+        <div class="flex justify-between items-center mb-10">
+            <div>
+                <h1 class="text-3xl font-black uppercase tracking-tighter">Panel de <span class="text-blue-600">Control</span></h1>
+                <p class="text-gray-500 text-sm">Gestiona el inventario de Foura Group E.I.R.L</p>
+            </div>
+            <a href="inicio.html" class="bg-white/5 border border-white/10 px-6 py-3 rounded-xl text-xs font-bold uppercase hover:bg-blue-600 transition-all">Volver a la Tienda</a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <form onsubmit="addProduct(event)" class="bg-[#111111] p-8 rounded-2xl border border-white/5 h-fit">
+                <h2 class="text-lg font-black mb-6 uppercase tracking-wider text-blue-500">Nuevo Producto</h2>
+                <div class="space-y-4">
+                    <input type="text" id="prod-name" placeholder="Nombre" required class="w-full bg-[#1a1a1a] p-3 rounded-lg border border-white/10 text-sm">
+                    <input type="text" id="prod-sku" placeholder="SKU" required class="w-full bg-[#1a1a1a] p-3 rounded-lg border border-white/10 text-sm">
+                    <select id="prod-cat" class="w-full bg-[#1a1a1a] p-3 rounded-lg border border-white/10 text-sm">
+                        <option value="mecanica">Mecánica</option>
+                        <option value="electricidad">Electricidad</option>
+                        <option value="herramientas">Herramientas</option>
+                    </select>
+                    <div class="border-2 border-dashed border-white/10 p-4 rounded-lg text-center">
+                        <input type="file" id="prod-img-input" accept="image/*" class="hidden" onchange="previewImage(event)">
+                        <button type="button" onclick="document.getElementById('prod-img-input').click()" class="text-[10px] font-bold uppercase text-gray-400">
+                            <i class="fa-solid fa-cloud-arrow-up mr-2"></i> Subir Imagen
+                        </button>
+                        <img id="prod-img-preview" src="#" alt="Preview" class="hidden mt-4 h-20 w-20 object-cover mx-auto rounded">
+                    </div>
+                    <textarea id="prod-desc" placeholder="Descripción" required class="w-full bg-[#1a1a1a] p-3 rounded-lg border border-white/10 text-sm h-20"></textarea>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-lg font-black text-xs uppercase tracking-widest transition-all">Publicar Producto</button>
+                </div>
+            </form>
+
+            <div class="md:col-span-2 bg-[#111111] rounded-2xl border border-white/5 overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-white/5 text-[10px] uppercase text-gray-400 tracking-widest">
+                        <tr>
+                            <th class="p-4">Imagen</th>
+                            <th class="p-4">Producto</th>
+                            <th class="p-4 text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-product-list" class="divide-y divide-white/5"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="../js/admin.js"></script>
+</body>
+</html>

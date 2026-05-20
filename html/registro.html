@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foura Group | Acceso al Sistema</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="bg-[#0a0a0a] text-white min-h-screen flex flex-col justify-between dot-grid">
+
+    <header class="w-full bg-[#0a0a0a]/90 backdrop-blur-md border-b border-white/10 py-4">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            
+            <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='inicio.html'">
+                <img src="../img/logo.png" alt="Foura Group Logo" class="h-10 w-auto object-contain" onerror="this.src='https://placehold.co/200x50/111/fff?text=Foura+Group'">
+                <span class="text-xl font-black tracking-tighter uppercase">Foura <span class="text-blue-600">Group</span></span>
+            </div>
+
+            <a href="inicio.html" class="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Volver
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center py-12 px-4">
+        
+        <div id="box-login" class="w-full max-w-md bg-[#111111] p-8 rounded-2xl border border-white/5 shadow-2xl">
+            <h3 class="text-2xl font-black mb-2 tracking-tighter uppercase text-center">Iniciar <span class="text-blue-600">Sesión</span></h3>
+            <p class="text-gray-500 text-xs text-center mb-8 uppercase tracking-wider">Ingresa tus credenciales técnicas</p>
+            
+            <form onsubmit="handleLogin(event)" class="space-y-5">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Correo Electrónico</label>
+                    <input type="email" id="login-email" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors" placeholder="correo@empresa.com">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Contraseña</label>
+                    <div class="relative">
+                        <input type="password" id="login-pass" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 pr-10 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors" placeholder="••••••••">
+                        <button type="button" onclick="togglePassword('login-pass', this)" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-blue-500 transition-colors">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-blue-600/20 mt-2">
+                    Ingresar al Sistema
+                </button>
+            </form>
+            <p class="text-center text-xs text-gray-500 mt-6">
+                ¿No tienes cuenta? <a href="javascript:void(0)" onclick="toggleForm('register')" class="text-blue-500 hover:underline font-bold">Regístrate aquí</a>
+            </p>
+        </div>
+
+        <div id="box-register" class="w-full max-w-md bg-[#111111] p-8 rounded-2xl border border-white/5 shadow-2xl hidden">
+            <h3 class="text-2xl font-black mb-2 tracking-tighter uppercase text-center">Crear <span class="text-blue-600">Cuenta</span></h3>
+            <p class="text-gray-500 text-xs text-center mb-8 uppercase tracking-wider">Únete a la red de Foura Group</p>
+            
+            <form onsubmit="handleRegister(event)" class="space-y-5">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Nombre Completo</label>
+                    <input type="text" id="reg-name" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors" placeholder="Juan Pérez">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Correo Electrónico</label>
+                    <input type="email" id="reg-email" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors" placeholder="correo@empresa.com">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Contraseña</label>
+                    <div class="relative">
+                        <input type="password" id="reg-pass" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 pr-10 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors" placeholder="••••••••">
+                        <button type="button" onclick="togglePassword('reg-pass', this)" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-blue-500 transition-colors">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-blue-600/20 mt-2">
+                    Registrar Cuenta
+                </button>
+            </form>
+            <p class="text-center text-xs text-gray-500 mt-6">
+                ¿Ya tienes cuenta? <a href="javascript:void(0)" onclick="toggleForm('login')" class="text-blue-500 hover:underline font-bold">Inicia sesión</a>
+            </p>
+        </div>
+
+    </main>
+
+    <div id="toast"></div>
+
+    <footer class="bg-[#050505] py-6 border-t border-white/5 text-center">
+        <p class="text-gray-600 text-[10px] uppercase tracking-[0.4em]">
+            © 2026 FOURA GROUP E.I.R.L - Control de Acceso
+        </p>
+    </footer>
+
+    <script src="../js/auth.js"></script>
+</body>
+</html>

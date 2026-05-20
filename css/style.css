@@ -12,7 +12,7 @@ body {
 }
 
 .dot-grid {
-    background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
+    background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 0);
     background-size: 40px 40px;
 }
 
@@ -69,13 +69,15 @@ body {
 }
 
 .page-view {
-    transition: opacity 0.5s ease, transform 0.5s ease;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    opacity: 1;
+    transform: translateY(0);
 }
 
-.hidden-view {
-    display: none;
+.page-view.view-hidden {
+    display: none !important;
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(15px);
 }
 
 #toast {
@@ -91,8 +93,15 @@ body {
     left: 50%;
     transform: translateX(-50%);
     font-weight: 600;
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+    width: calc(100% - 40px);
+    max-width: 400px;
 }
 
-#toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+#toast.show { 
+    visibility: visible; 
+    animation: fadein 0.5s, fadeout 0.5s 2.5s forwards; 
+}
+
 @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
 @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
