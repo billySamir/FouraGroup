@@ -28,6 +28,7 @@ function handleRegister(e) {
     showToast("Registro exitoso");
     // ... resto de tu código
 }
+
 function handleLogin(e) {
     e.preventDefault();
     const email = document.getElementById('login-email').value;
