@@ -1,5 +1,5 @@
 import { db } from './db.js';
-import { doc, getDoc, setDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
 // REGISTRO: Guardamos en Firestore
 async function handleRegister(e) {
@@ -9,10 +9,8 @@ async function handleRegister(e) {
     const pass = document.getElementById('reg-pass').value;
 
     try {
-        // Asignación de rol
         const role = (email === 'billybravo93@gmail.com') ? 'administrador' : 'cliente';
 
-        // Creamos documento en la colección "usuarios" usando el email como ID
         await setDoc(doc(db, "usuarios", email), {
             name,
             email,
@@ -21,7 +19,7 @@ async function handleRegister(e) {
         });
 
         showToast("Registro exitoso en la nube");
-        toggleForm('login'); // Volvemos al login
+        toggleForm('login'); 
     } catch (error) {
         console.error("Error al registrar:", error);
         showToast("Error en el registro");
@@ -42,7 +40,8 @@ async function handleLogin(e) {
             const userData = docSnap.data();
             localStorage.setItem('currentUser', JSON.stringify(userData));
             showToast(`¡Bienvenido, ${userData.name}!`);
-            setTimeout(() => { window.location.href = 'inicio.html'; }, 1500);
+            // Ruta absoluta para evitar errores 404
+            setTimeout(() => { window.location.href = '/inicio.html'; }, 1500);
         } else {
             showToast("Correo o contraseña incorrectos");
         }
@@ -52,33 +51,32 @@ async function handleLogin(e) {
     }
 }
 
-// EXPOSICIÓN GLOBAL
-window.toggleForm = (type) => {
+// FUNCIONES DE APOYO
+function toggleForm(type) {
     const loginBox = document.getElementById('box-login');
     const registerBox = document.getElementById('box-register');
     if (type === 'register') { loginBox.classList.add('hidden'); registerBox.classList.remove('hidden'); }
     else { registerBox.classList.add('hidden'); loginBox.classList.remove('hidden'); }
-};
-window.handleRegister = handleRegister;
-window.handleLogin = handleLogin;
-window.location.href = '../html/registro.html';
-window.togglePassword = (inputId, button) => {
+}
+
+function togglePassword(inputId, button) {
     const input = document.getElementById(inputId);
     const icon = button.querySelector('i');
     input.type = input.type === 'password' ? 'text' : 'password';
     icon.classList.toggle('fa-eye');
     icon.classList.toggle('fa-eye-slash');
-};
-window.showToast = (text) => {
+}
+
+function showToast(text) {
     const toast = document.getElementById('toast');
     if (toast) {
         toast.innerText = text;
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 3000);
     }
-};
+}
 
-
+// EXPOSICIÓN GLOBAL (Aquí expones las funciones que definiste arriba)
 window.toggleForm = toggleForm;
 window.handleRegister = handleRegister;
 window.handleLogin = handleLogin;
