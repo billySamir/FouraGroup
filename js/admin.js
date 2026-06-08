@@ -33,8 +33,18 @@ function addProduct(e) {
     const sku = document.getElementById('prod-sku').value;
     const cat = document.getElementById('prod-cat').value;
     const desc = document.getElementById('prod-desc').value;
+    
+    // NUEVOS CAMPOS
+    const detalles = document.getElementById('prod-detalles').value;
+    const rawVariantes = document.getElementById('prod-variantes').value;
 
     if (!tempImage) { alert("Por favor sube una imagen"); return; }
+
+    // Convertir el texto de variantes en el array de objetos esperado
+    const variantes = rawVariantes.split(',').map(item => {
+        const [medida, ref] = item.split(':');
+        return { medida: medida.trim(), ref: ref.trim() };
+    });
 
     let products = JSON.parse(localStorage.getItem('foura_catalog')) || [];
     
@@ -44,8 +54,10 @@ function addProduct(e) {
         sku: sku.toUpperCase(),
         category: cat,
         desc: desc,
+        detalles: detalles, // Guardamos la descripción larga
+        variantes: variantes, // Guardamos el array de variantes
         image: tempImage,
-        featured: true // <--- ¡ESTA ERA LA LÍNEA QUE FALTABA!
+        featured: true 
     };
 
     products.push(newProduct);
@@ -53,10 +65,10 @@ function addProduct(e) {
     
     e.target.reset();
     tempImage = "";
-    const preview = document.getElementById('prod-img-preview');
-    if(preview) preview.classList.add('hidden');
+    document.getElementById('prod-img-preview').classList.add('hidden');
     
     renderAdminTable();
+    alert("Producto publicado con éxito");
 }
 
 function renderAdminTable() {
