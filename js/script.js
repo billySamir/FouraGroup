@@ -145,11 +145,12 @@ function toggleUserMenu() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     const dropdown = document.getElementById('user-dropdown');
     if (currentUser) {
-        document.getElementById('dropdown-user-name').innerText = `${currentUser.name} ${currentUser.lastname || ''}`;
-        const adminBtn = document.getElementById('btn-admin-panel');
-        if (adminBtn) adminBtn.className = (currentUser.role === 'administrador' || currentUser.role === 'vendedor') ? "flex w-full text-left px-4 py-3 text-xs font-bold text-green-400 hover:bg-green-500/10 border-b border-white/5 items-center" : "hidden";
+        // ... (tu código actual)
         dropdown.classList.toggle('hidden');
-    } else { window.location.href = './html/registro.html'; }
+    } else { 
+        // CAMBIA ESTA LÍNEA (Asegúrate de poner la barra / al principio)
+        window.location.href = '/html/registro.html';
+    }
 }
 
 function logoutUser() { localStorage.removeItem('currentUser'); window.location.reload(); }
