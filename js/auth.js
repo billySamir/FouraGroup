@@ -8,9 +8,20 @@ async function handleRegister(e) {
     const email = document.getElementById('reg-email').value;
     const pass = document.getElementById('reg-pass').value;
 
+    // Lista de correos que quieres que sean administradores
+    const adminEmails = ['billybravo93@gmail.com', 'otro.admin@empresa.com'];
+
     try {
-        const role = (email === 'billybravo93@gmail.com') ? 'administrador' : 'cliente';
-        await setDoc(doc(db, "usuarios", email), { name, email, pass, role });
+        // Verifica si el email está en la lista de administradores
+        const role = adminEmails.includes(email) ? 'administrador' : 'cliente';
+
+        await setDoc(doc(db, "usuarios", email), { 
+            name, 
+            email, 
+            pass, 
+            role 
+        });
+
         showToast("Registro exitoso");
         toggleForm('login');
     } catch (error) {

@@ -144,12 +144,37 @@ function sendToWhatsApp() {
 function toggleUserMenu() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     const dropdown = document.getElementById('user-dropdown');
+    
+    // --- DEBUGGING ---
+    console.log("Usuario actual:", currentUser);
     if (currentUser) {
-        // ... (tu código actual)
+        console.log("Rol detectado:", currentUser.role);
+    } else {
+        console.log("No hay usuario logueado en localStorage");
+    }
+    // -----------------
+
+    if (currentUser) {
+        document.getElementById('dropdown-user-name').innerText = `${currentUser.name}`;
+        
+        const adminBtn = document.getElementById('btn-admin-panel');
+        
+        // Vamos a usar classList en lugar de className para no borrar clases por error
+        if (adminBtn) {
+            const esAdmin = (currentUser.role === 'administrador' || currentUser.role === 'vendedor');
+            console.log("¿Es admin o vendedor?:", esAdmin);
+            
+            if (esAdmin) {
+                adminBtn.classList.remove('hidden');
+                adminBtn.classList.add('flex'); // Aseguramos que se muestre
+            } else {
+                adminBtn.classList.add('hidden');
+            }
+        }
+        
         dropdown.classList.toggle('hidden');
     } else { 
-        // CAMBIA ESTA LÍNEA (Asegúrate de poner la barra / al principio)
-        window.location.href = '/html/registro.html';
+        window.location.href = '/html/registro.html'; 
     }
 }
 
