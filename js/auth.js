@@ -1,6 +1,7 @@
 import { db } from './db.js';
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
+// REGISTRO: Guardamos en Firestore
 async function handleRegister(e) {
     e.preventDefault();
     const name = document.getElementById('reg-name').value;
@@ -17,6 +18,7 @@ async function handleRegister(e) {
     }
 }
 
+// LOGIN: Buscamos en Firestore
 async function handleLogin(e) {
     e.preventDefault();
     const email = document.getElementById('login-email').value;
@@ -39,6 +41,7 @@ async function handleLogin(e) {
     }
 }
 
+// FUNCIONES DE APOYO
 function toggleForm(type) {
     const loginBox = document.getElementById('box-login');
     const registerBox = document.getElementById('box-register');
@@ -46,12 +49,30 @@ function toggleForm(type) {
     else { registerBox.classList.add('hidden'); loginBox.classList.remove('hidden'); }
 }
 
+// --- FUNCIÓN QUE TE FALTABA ---
+function togglePassword(inputId, button) {
+    const input = document.getElementById(inputId);
+    const icon = button.querySelector('i');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
 function showToast(text) {
     const toast = document.getElementById('toast');
     if (toast) { toast.innerText = text; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3000); }
 }
 
+// EXPOSICIÓN GLOBAL
 window.handleRegister = handleRegister;
 window.handleLogin = handleLogin;
 window.toggleForm = toggleForm;
+window.togglePassword = togglePassword; // <--- Importante para que el HTML la detecte
 window.showToast = showToast;
