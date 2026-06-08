@@ -1,14 +1,8 @@
-let tempImage = ""; 
+import { db } from './db.js'; // Asegúrate de tener tu archivo db.js creado
+// En admin.js
+import { collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Seguridad
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (!currentUser || (currentUser.role !== 'administrador' && currentUser.role !== 'vendedor')) {
-        window.location.href = 'inicio.html';
-        return;
-    }
-    renderAdminTable(); 
-});
+let tempImage = ""; 
 
 function previewImage(event) {
     const file = event.target.files[0];
@@ -26,80 +20,111 @@ function previewImage(event) {
     }
 }
 
-function addProduct(e) {
+async function addProduct(e) {
     e.preventDefault();
     
     const name = document.getElementById('prod-name').value;
     const sku = document.getElementById('prod-sku').value;
     const cat = document.getElementById('prod-cat').value;
     const desc = document.getElementById('prod-desc').value;
-    
-    // NUEVOS CAMPOS
     const detalles = document.getElementById('prod-detalles').value;
     const rawVariantes = document.getElementById('prod-variantes').value;
 
     if (!tempImage) { alert("Por favor sube una imagen"); return; }
 
-    // Convertir el texto de variantes en el array de objetos esperado
+
     const variantes = rawVariantes.split(',').map(item => {
         const [medida, ref] = item.split(':');
-        return { medida: medida.trim(), ref: ref.trim() };
+        return { medida: medida ? medida.trim() : "", ref: ref ? ref.trim() : "" };
     });
 
-    let products = JSON.parse(localStorage.getItem('foura_catalog')) || [];
-    
-    const newProduct = {
-        id: Date.now(),
-        name: name,
-        sku: sku.toUpperCase(),
-        category: cat,
-        desc: desc,
-        detalles: detalles, // Guardamos la descripción larga
-        variantes: variantes, // Guardamos el array de variantes
-        image: tempImage,
-        featured: true 
-    };
-
-    products.push(newProduct);
-    localStorage.setItem('foura_catalog', JSON.stringify(products));
-    
-    e.target.reset();
-    tempImage = "";
-    document.getElementById('prod-img-preview').classList.add('hidden');
-    
-    renderAdminTable();
-    alert("Producto publicado con éxito");
+    try {
+        await addDoc(collection(db, "productos"), {
+            name: name,
+            sku: sku.toUpperCase(),
+            category: cat,
+            desc: desc,
+            detalles: detalles,
+            variantes: variantes,
+            image: tempImage,
+            featured: true 
+        });
+        
+        alert("¡Producto publicado con éxito en la nube!");
+        e.target.reset();
+        tempImage = "";
+        document.getElementById('prod-img-preview').classList.add('hidden');
+        renderAdminTable();
+    } catch (error) {
+        console.error("Error al publicar:", error);
+    }
 }
 
-function renderAdminTable() {
-    const rawData = localStorage.getItem('foura_catalog');
-    if (!rawData) return; // Si no hay nada, no hacemos nada
-    
-    const products = JSON.parse(rawData);
+
+async function renderAdminTable() {
     const tbody = document.getElementById('admin-product-list');
-    
     if (!tbody) return;
 
-    // Usamos el .map de forma segura
-    tbody.innerHTML = products.map((p, index) => `
-        <tr class="hover:bg-white/5 border-b border-white/5">
-            <td class="p-4"><img src="${p.image}" class="h-12 w-12 object-cover rounded shadow-lg"></td>
-            <td class="p-4 text-white">
-                <div class="text-sm font-bold">${p.name}</div>
-                <div class="text-[10px] text-blue-500 font-mono">${p.sku}</div>
-            </td>
-            <td class="p-4 text-center">
-                <button onclick="deleteProduct(${index})" class="text-red-500 hover:text-white transition-colors">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
-            </td>
-        </tr>
-    `).join('');
+    try {
+        const querySnapshot = await getDocs(collection(db, "productos"));
+        tbody.innerHTML = ""; 
+        
+        querySnapshot.forEach((doc) => {
+            const p = doc.data();
+            const id = doc.id; 
+            
+            tbody.innerHTML += `
+                <tr class="hover:bg-white/5 border-b border-white/5">
+                    <td class="p-4"><img src="${p.image}" class="h-12 w-12 object-cover rounded shadow-lg"></td>
+                    <td class="p-4 text-white">
+                        <div class="text-sm font-bold">${p.name}</div>
+                        <div class="text-[10px] text-blue-500 font-mono">${p.sku}</div>
+                    </td>
+                    <td class="p-4 text-center">
+                        <button onclick="deleteProduct('${id}')" class="text-red-500 hover:text-white transition-colors">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+    } catch (error) {
+        console.error("Error al cargar productos:", error);
+    }
 }
 
-function deleteProduct(index) {
-    let products = JSON.parse(localStorage.getItem('foura_catalog'));
-    products.splice(index, 1);
-    localStorage.setItem('foura_catalog', JSON.stringify(products));
-    renderAdminTable();
+// Función para borrar
+async function deleteProduct(id) {
+    if (confirm("¿Eliminar este producto de la nube?")) {
+        try {
+            await deleteDoc(doc(db, "productos", id));
+            renderAdminTable();
+        } catch (error) {
+            console.error("Error al eliminar:", error);
+        }
+    }
 }
+
+
+function showToast(text) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.innerText = text;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+
+window.showToast = showToast;
+
+window.addProduct = addProduct;
+window.deleteProduct = deleteProduct;
+window.previewImage = previewImage;
+
+
+document.addEventListener('DOMContentLoaded', renderAdminTable);
+
+window.addProduct = addProduct;
+window.deleteProduct = deleteProduct;
+window.previewImage = previewImage;
+window.showToast = showToast;
