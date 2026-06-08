@@ -61,6 +61,7 @@ window.toggleForm = (type) => {
 };
 window.handleRegister = handleRegister;
 window.handleLogin = handleLogin;
+window.location.href = '../html/registro.html';
 window.togglePassword = (inputId, button) => {
     const input = document.getElementById(inputId);
     const icon = button.querySelector('i');
