@@ -160,6 +160,14 @@
     class="fixed bottom-6 left-6 z-[200] w-14 h-14 bg-green-500 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300 hover:bg-green-600">
         <i class="fa-brands fa-whatsapp text-white text-3xl"></i>
     </a>
+    
+    <form id="product-form" class="bg-[#111111] p-6 rounded-xl border border-white/5">
+    <input type="hidden" id="edit-product-id"> <!-- ID oculto para saber qué editar -->
+    <input type="text" id="prod-name" placeholder="Nombre" class="w-full bg-white/5 p-3 mb-4 rounded">
+    <input type="text" id="prod-sku" placeholder="SKU" class="w-full bg-white/5 p-3 mb-4 rounded">
+    <textarea id="prod-desc" placeholder="Descripción" class="w-full bg-white/5 p-3 mb-4 rounded"></textarea>
+    <button type="submit" class="bg-blue-600 px-6 py-3 rounded">Guardar Producto</button>
+</form>
 
     <script type="module" src="../js/script.js"></script>
 </body>
