@@ -74,19 +74,67 @@
 
     <main class="min-h-screen">
         <div id="view-home" class="page-view">
-            <!-- SECCIÓN PRINCIPAL: Se añadió fondo bg-[#0a0a0a] -->
-            <section class="relative min-h-[70vh] flex items-center pt-32 pb-20 overflow-hidden dot-grid bg-[#0a0a0a]">
-                
-                <!-- FONDO 1: Brillo celeste -->
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-cyan-500/10 blur-[100px] rounded-full pointer-events-none"></div>
-
-                <!-- FONDO 2: Imagen tecnológica transparente -->
+            <!-- SECCIÓN PRINCIPAL MEJORADA -->
+            <section class="relative min-h-[80vh] flex items-center pt-32 pb-24 overflow-hidden dot-grid bg-[#0a0a0a]">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] md:w-[720px] h-[320px] md:h-[720px] bg-cyan-500/10 blur-[120px] rounded-full pointer-events-none"></div>
                 <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center bg-no-repeat opacity-10 mix-blend-luminosity pointer-events-none z-0"></div>
 
-                <div class="container mx-auto px-6 relative z-10 text-center">
-                    <h1 class="text-6xl md:text-8xl font-black mb-6 leading-[0.9] tracking-tighter uppercase">FOURA <span class="text-blue-600">GROUP</span></h1>
-                    <p class="text-gray-400 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">Especialistas en <span class="text-white font-semibold">Automatización y Suministros Industriales</span> de alta precisión.</p>
-                    <button onclick="navigateTo('catalog')" class="bg-blue-600 hover:bg-blue-700 px-10 py-4 rounded-full font-black uppercase tracking-widest transition-all shadow-lg shadow-blue-600/20">Ver Todos los Productos</button>
+                <div class="container mx-auto px-6 relative z-10">
+                    <div class="grid gap-12 lg:grid-cols-[1.2fr_0.8fr] items-center">
+                        <div class="space-y-8 text-center lg:text-left">
+                            <div class="inline-flex items-center justify-center mx-auto lg:mx-0 rounded-full bg-white/5 border border-white/10 px-4 py-2 text-xs uppercase tracking-[0.25em] text-blue-400 font-bold shadow-lg">Soluciones industriales · Cotiza rápido</div>
+                            <h1 class="text-5xl md:text-7xl font-black leading-tight tracking-tighter uppercase">FOURA <span class="text-blue-500">GROUP</span></h1>
+                            <p class="text-gray-300 text-base md:text-lg max-w-3xl mx-auto lg:mx-0 leading-relaxed">Equipos y suministros industriales con asesoría técnica especializada, envíos a todo Perú y cotizaciones por WhatsApp en segundos.</p>
+                            <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                                <button onclick="navigateTo('catalog')" class="bg-blue-600 hover:bg-blue-700 px-10 py-4 rounded-full font-black uppercase tracking-widest transition-all shadow-lg shadow-blue-600/20">Cotiza ahora</button>
+                                <a href="https://wa.me/51947121064?text=Hola%20Foura%20Group,%20quiero%20cotizar%20un%20producto" target="_blank" rel="noopener" class="inline-flex items-center justify-center rounded-full border border-blue-500 bg-transparent px-9 py-4 text-sm font-black uppercase tracking-widest text-blue-400 hover:bg-blue-500/10 transition-all">Cotiza por WhatsApp</a>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10">
+                                <div class="rounded-[28px] bg-white/5 border border-white/10 p-5 text-left">
+                                    <p class="text-sm uppercase tracking-[0.2em] text-blue-400 font-bold mb-3">Rápido</p>
+                                    <p class="text-sm text-gray-400">Cotiza en minutos con tu lista de productos.</p>
+                                </div>
+                                <div class="rounded-[28px] bg-white/5 border border-white/10 p-5 text-left">
+                                    <p class="text-sm uppercase tracking-[0.2em] text-blue-400 font-bold mb-3">Confiable</p>
+                                    <p class="text-sm text-gray-400">Suministros de marcas técnicas y asesoría profesional.</p>
+                                </div>
+                                <div class="rounded-[28px] bg-white/5 border border-white/10 p-5 text-left">
+                                    <p class="text-sm uppercase tracking-[0.2em] text-blue-400 font-bold mb-3">Soporte</p>
+                                    <p class="text-sm text-gray-400">Atención personalizada para tu proyecto industrial.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rounded-[40px] overflow-hidden border border-white/10 bg-[#111111]/90 shadow-2xl">
+                            <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1200&auto=format&fit=crop" alt="Equipo industrial Foura Group" class="w-full h-full min-h-[420px] object-cover">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="py-20 bg-[#080808] border-t border-white/10">
+                <div class="container mx-auto px-6">
+                    <div class="max-w-3xl mx-auto text-center mb-12">
+                        <span class="text-sm uppercase tracking-[0.3em] text-blue-400 font-black">Cómo cotizas</span>
+                        <h2 class="text-4xl md:text-5xl font-black mt-4">Cotiza en 3 pasos sencillos</h2>
+                        <p class="text-gray-400 mt-4">Selecciona tu producto, envía tu lista por WhatsApp y recibe asesoría técnica para tu proyecto.</p>
+                    </div>
+                    <div class="grid gap-6 md:grid-cols-3">
+                        <div class="rounded-[32px] bg-white/5 border border-white/10 p-8 text-center">
+                            <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-3xl bg-blue-600/10 text-blue-400 text-2xl"><i class="fa-solid fa-magnifying-glass"></i></div>
+                            <h3 class="text-xl font-bold mb-3">1. Explora</h3>
+                            <p class="text-gray-400 text-sm">Busca equipos por categoría, SKU o uso.</p>
+                        </div>
+                        <div class="rounded-[32px] bg-white/5 border border-white/10 p-8 text-center">
+                            <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-3xl bg-blue-600/10 text-blue-400 text-2xl"><i class="fa-solid fa-list-check"></i></div>
+                            <h3 class="text-xl font-bold mb-3">2. Solicita</h3>
+                            <p class="text-gray-400 text-sm">Envía tu cotización por WhatsApp con tu lista de productos.</p>
+                        </div>
+                        <div class="rounded-[32px] bg-white/5 border border-white/10 p-8 text-center">
+                            <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-3xl bg-blue-600/10 text-blue-400 text-2xl"><i class="fa-solid fa-headset"></i></div>
+                            <h3 class="text-xl font-bold mb-3">3. Recibe</h3>
+                            <p class="text-gray-400 text-sm">Obtén respuesta rápida con precio y detalles técnicos.</p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -109,18 +157,24 @@
 
         <div id="view-catalog" class="page-view view-hidden hidden pt-32 pb-20">
             <div class="container mx-auto px-6">
-                <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-                    <div>
-                        <h2 class="text-5xl font-black uppercase tracking-tighter">Nuestros <span class="text-blue-600">Productos</span></h2>
-                        <p class="text-gray-500 mt-2">Inventario técnico especializado.</p>
-                        <div class="flex flex-wrap gap-2 mt-6">
+                <div class="flex flex-col md:flex-row justify-between items-start mb-12 gap-6">
+                    <div class="space-y-4">
+                        <div>
+                            <h2 class="text-5xl font-black uppercase tracking-tighter">Explora nuestros <span class="text-blue-600">Productos</span></h2>
+                            <p class="text-gray-400 mt-3 max-w-2xl">Filtra por categoría, busca por SKU o nombre y agrega rápidamente los productos que necesitas para cotizar por WhatsApp.</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2 mt-4">
                             <button onclick="updateCatalogFilter('all', this)" class="filter-btn catalog-cat-btn active-filter">Todos</button>
                             <button onclick="updateCatalogFilter('mecanica', this)" class="filter-btn catalog-cat-btn">Mecánica</button>
                             <button onclick="updateCatalogFilter('electricidad', this)" class="filter-btn catalog-cat-btn">Electricidad</button>
                             <button onclick="updateCatalogFilter('herramientas', this)" class="filter-btn catalog-cat-btn">Herramientas</button>
                         </div>
+                        <div id="product-count" class="text-gray-500 text-sm mt-3">Mostrando productos</div>
                     </div>
-                    <input type="text" id="catalog-search" placeholder="Buscar SKU o nombre..." class="bg-white/5 border border-white/10 rounded-xl py-3 px-6 w-full md:w-80 focus:outline-none focus:border-blue-500 transition-colors">
+                    <div class="relative w-full md:w-96">
+                        <span class="absolute inset-y-0 left-4 flex items-center text-gray-500"><i class="fa-solid fa-magnifying-glass"></i></span>
+                        <input type="text" id="catalog-search" placeholder="Buscar SKU o nombre..." class="bg-white/10 border border-white/10 rounded-3xl py-4 pl-14 pr-6 w-full focus:outline-none focus:border-blue-500 transition-colors text-sm text-white" />
+                    </div>
                 </div>
                 <!-- ARREGLO DEL CORTE EN EL CATÁLOGO: Se añadió py-4 -->
                 <div id="full-catalog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 py-4"></div>
@@ -142,7 +196,18 @@
         </div>
     </div>
 
+    <div id="product-modal" class="fixed inset-0 z-[300] hidden">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeProductModal()"></div>
+        <div class="absolute left-1/2 top-1/2 max-w-4xl w-[95%] -translate-x-1/2 -translate-y-1/2 p-6 bg-[#111111] border border-white/10 rounded-[32px] shadow-2xl overflow-hidden">
+            <div id="modal-content"></div>
+        </div>
+    </div>
+
     <div id="toast"></div>
+
+    <a href="https://wa.me/51947121064?text=Hola%20Foura%20Group,%20quiero%20cotizar%20un%20producto" target="_blank" rel="noopener" class="whatsapp-fab" aria-label="WhatsApp">
+        <i class="fa-brands fa-whatsapp text-2xl"></i>
+    </a>
 
     <footer class="bg-[#050505] pt-20 pb-12 border-t border-white/5">
         <div class="container mx-auto px-6 text-center">

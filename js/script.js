@@ -13,7 +13,8 @@ function initRealtimeUpdates() {
         products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         loadDestacados();
         if (document.getElementById('full-catalog-grid')) {
-            renderFullCatalog();
+            const currentSearch = document.getElementById('catalog-search')?.value || '';
+            renderFullCatalog(currentSearch);
         }
     });
 }
@@ -22,11 +23,23 @@ function initRealtimeUpdates() {
 function navigateTo(view) {
     const home = document.getElementById('view-home');
     const catalog = document.getElementById('view-catalog');
+    if (!home || !catalog) return;
+
     if (view === 'catalog') {
         home.classList.add('view-hidden');
-        setTimeout(() => { home.style.display = 'none'; catalog.style.display = 'block'; setTimeout(() => catalog.classList.remove('view-hidden'), 50); renderFullCatalog(); }, 300);
+        home.classList.add('hidden');
+        home.style.display = 'none';
+
+        catalog.classList.remove('hidden');
+        catalog.style.display = 'block';
+        setTimeout(() => catalog.classList.remove('view-hidden'), 50);
+        renderFullCatalog();
     } else {
-        catalog.classList.add('hidden'); // Ajuste: usando clase hidden para consistencia
+        catalog.classList.add('view-hidden');
+        catalog.classList.add('hidden');
+        catalog.style.display = 'none';
+
+        home.classList.remove('hidden');
         home.classList.remove('view-hidden');
         home.style.display = 'block';
         loadDestacados();
@@ -46,18 +59,25 @@ function updateCatalogFilter(cat, btn) {
 function renderCard(product, isSlider = false) {
     return `
         <div class="${isSlider ? 'slider-item w-full md:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)] shrink-0' : ''}">
-            <div class="product-card p-6 flex flex-col h-full relative group bg-[#111111] border border-white/5 hover:border-blue-500/30 transition-all duration-500 rounded-[32px] shadow-lg">
-                <div class="cursor-pointer flex flex-col flex-grow" onclick="showProductDetails('${product.id}')">
-                    <div class="w-32 h-32 mx-auto bg-[#0a0a0a] rounded-full mb-6 overflow-hidden flex items-center justify-center border border-white/5 group-hover:border-blue-500/30 transition-colors shadow-inner">
-                        <img src="${product.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://placehold.co/200x200/111/fff?text=Foura'">
-                    </div>
-                    <div class="text-center mb-2">
-                        <span class="text-[9px] text-blue-400 font-black uppercase tracking-[0.2em]">${product.category}</span>
-                        <h3 class="text-lg font-bold text-white mt-1 group-hover:text-blue-400 transition-colors">${product.name}</h3>
-                    </div>
-                    <p class="text-[11px] text-gray-500 text-center mb-8 leading-relaxed px-2 line-clamp-2">${product.desc}</p>
+            <div class="product-card group cursor-pointer">
+                <div class="product-meta justify-center mb-5">
+                    <span class="badge-category">${product.category || 'General'}</span>
+                    ${product.featured ? `<span class="badge-featured">Destacado</span>` : ''}
                 </div>
-                <button onclick="addToCart('${product.id}')" class="w-full bg-white/5 hover:bg-blue-600 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 border border-white/5 hover:border-blue-600 mt-auto">Añadir a Cotización</button>
+                <div class="mb-6 flex items-center justify-center">
+                    <div class="product-image-wrapper">
+                        <img src="${product.image}" class="product-image" onerror="this.src='https://placehold.co/200x200/111/fff?text=Foura'" alt="${product.name}">
+                    </div>
+                </div>
+                <div class="text-center mb-6 px-2">
+                    <h3 class="product-name">${product.name}</h3>
+                    <p class="product-sku">${product.sku || 'SKU no disponible'}</p>
+                </div>
+                <p class="product-desc">${product.desc || 'Descripción breve no disponible.'}</p>
+                <div class="card-actions mt-auto grid gap-3">
+                    <button onclick="event.stopPropagation(); addToCart('${product.id}')" class="btn-primary">Añadir a Cotización</button>
+                    <button onclick="event.stopPropagation(); showProductDetails('${product.id}')" class="btn-secondary">Ver Detalles</button>
+                </div>
             </div>
         </div>
     `;
@@ -71,11 +91,19 @@ function loadDestacados() {
 
 function renderFullCatalog(search = '') {
     const grid = document.getElementById('full-catalog-grid');
+    const count = document.getElementById('product-count');
     if (!grid) return;
     const filtered = products.filter(p => 
-        (p.name.toLowerCase().includes(search.toLowerCase()) || p.sku.toLowerCase().includes(search.toLowerCase())) && 
+        (p.name.toLowerCase().includes(search.toLowerCase()) || (p.sku && p.sku.toLowerCase().includes(search.toLowerCase()))) && 
         (activeCatalogCat === 'all' || p.category === activeCatalogCat)
     );
+
+    if (count) {
+        count.innerText = filtered.length
+            ? `Mostrando ${filtered.length} producto${filtered.length === 1 ? '' : 's'}`
+            : 'No se encontraron productos';
+    }
+
     grid.innerHTML = filtered.length ? filtered.map(p => renderCard(p)).join('') : `<div class="col-span-full py-20 text-center text-gray-600 uppercase text-xs tracking-[0.2em]">No se encontraron productos</div>`;
 }
 
@@ -106,10 +134,20 @@ function slidePrev() {
 function addToCart(id) {
     const p = products.find(prod => prod.id === id);
     if (!p) return;
-    if (!cart.find(item => item.id === id)) { cart.push(p); showToast(`Añadido: ${p.name}`); updateCartUI(); } else showToast("Ya está en tu lista");
+    if (!cart.find(item => item.id === id)) { 
+        cart.push(p); 
+        showToast(`Añadido: ${p.name}`); 
+        updateCartUI(); 
+    } else {
+        showToast("Ya está en tu lista");
+    }
 }
 
-function removeFromCart(id) { cart = cart.filter(p => p.id !== id); updateCartUI(); showToast("Producto eliminado"); }
+function removeFromCart(id) { 
+    cart = cart.filter(p => p.id !== id); 
+    updateCartUI(); 
+    showToast("Producto eliminado"); 
+}
 
 function updateCartUI() {
     const list = document.getElementById('cart-items');
@@ -119,7 +157,10 @@ function updateCartUI() {
     list.innerHTML = cart.length ? cart.map(item => `
         <div class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl border border-white/5">
             <img src="${item.image}" class="w-14 h-14 object-cover rounded-lg bg-black">
-            <div class="flex-grow"><h4 class="text-sm font-bold text-white line-clamp-1">${item.name}</h4><p class="text-[10px] text-gray-500 font-mono">${item.sku}</p></div>
+            <div class="flex-grow">
+                <h4 class="text-sm font-bold text-white line-clamp-1">${item.name}</h4>
+                <p class="text-[10px] text-gray-500 font-mono">${item.sku}</p>
+            </div>
             <button onclick="removeFromCart('${item.id}')" class="p-3 text-gray-500 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
         </div>
     `).join('') : `<div class="text-center py-20 text-gray-600 uppercase text-xs tracking-widest font-bold">Tu lista está vacía</div>`;
@@ -128,7 +169,11 @@ function updateCartUI() {
 // 5. Utilidades y Auth
 function showToast(text) { 
     const toast = document.getElementById('toast'); 
-    if (toast) { toast.innerText = text; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3000); } 
+    if (toast) { 
+        toast.innerText = text; 
+        toast.classList.add('show'); 
+        setTimeout(() => toast.classList.remove('show'), 3000); 
+    } 
 }
 
 function toggleCart() { document.getElementById('cart-drawer').classList.toggle('hidden'); }
@@ -139,46 +184,42 @@ function sendToWhatsApp() {
     let message = "*SOLICITUD DE COTIZACIÓN - FOURA GROUP*\n-----------------------------------------\n";
     cart.forEach(item => { message += `• *${item.name}* [${item.sku}]\n`; });
     window.open(`https://wa.me/51947121064?text=${encodeURIComponent(message)}`, '_blank');
+    cart = [];
+    updateCartUI();
+    const cartDrawer = document.getElementById('cart-drawer');
+    if (cartDrawer && !cartDrawer.classList.contains('hidden')) {
+        cartDrawer.classList.add('hidden');
+    }
+    showToast("Cotización enviada y carrito limpiado");
 }
 
 function toggleUserMenu() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     const dropdown = document.getElementById('user-dropdown');
     
-    // --- DEBUGGING ---
-    console.log("Usuario actual:", currentUser);
-    if (currentUser) {
-        console.log("Rol detectado:", currentUser.role);
-    } else {
-        console.log("No hay usuario logueado en localStorage");
-    }
-    // -----------------
-
     if (currentUser) {
         document.getElementById('dropdown-user-name').innerText = `${currentUser.name}`;
-        
         const adminBtn = document.getElementById('btn-admin-panel');
         
-        // Vamos a usar classList en lugar de className para no borrar clases por error
         if (adminBtn) {
             const esAdmin = (currentUser.role === 'administrador' || currentUser.role === 'vendedor');
-            console.log("¿Es admin o vendedor?:", esAdmin);
-            
             if (esAdmin) {
                 adminBtn.classList.remove('hidden');
-                adminBtn.classList.add('flex'); // Aseguramos que se muestre
+                adminBtn.classList.add('flex');
             } else {
                 adminBtn.classList.add('hidden');
             }
         }
-        
         dropdown.classList.toggle('hidden');
     } else { 
         window.location.href = '/html/registro.html'; 
     }
 }
 
-function logoutUser() { localStorage.removeItem('currentUser'); window.location.reload(); }
+function logoutUser() { 
+    localStorage.removeItem('currentUser'); 
+    window.location.reload(); 
+}
 
 function checkAuthNavbar() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -194,10 +235,12 @@ function showProductDetails(id) {
     if (!p) return;
     const modal = document.getElementById('product-modal');
     const content = document.getElementById('modal-content');
-    const variantesHTML = p.variantes && p.variantes.length > 0 ? p.variantes.map(v => `
+    
+    // Validación segura para las variantes
+    const variantesHTML = (p.variantes && Array.isArray(p.variantes) && p.variantes.length > 0) ? p.variantes.map(v => `
         <div class="flex justify-between py-2 border-b border-white/5 text-xs">
-            <span class="text-gray-400">${v.medida}</span>
-            <span class="text-blue-400 font-mono">${v.ref}</span>
+            <span class="text-gray-400">${v.medida || 'N/A'}</span>
+            <span class="text-blue-400 font-mono">${v.ref || '-'}</span>
         </div>
     `).join('') : '<p class="text-xs text-gray-500">Sin variantes específicas.</p>';
 
@@ -229,15 +272,23 @@ function closeProductModal() {
 }
 
 function initApp() {
-    initRealtimeUpdates(); // Carga de datos real desde Firebase
+    initRealtimeUpdates(); 
     checkAuthNavbar();
     setInterval(slideNext, 5000);
     window.addEventListener('resize', updateSlider);
+
+    // Activador del buscador en tiempo real
+    const searchInput = document.getElementById('catalog-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            renderFullCatalog(e.target.value);
+        });
+    }
 }
 
 document.addEventListener('DOMContentLoaded', initApp);
 
-// 7. EXPOSICIÓN GLOBAL (CRUCIAL PARA QUE FUNCIONE EL HTML)
+// 7. EXPOSICIÓN GLOBAL
 window.navigateTo = navigateTo;
 window.toggleUserMenu = toggleUserMenu;
 window.toggleCart = toggleCart;
