@@ -76,18 +76,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (!currentUser || !currentUser.email) { window.location.href = 'registro.html'; return; }
 
+    // Mostrar al menos los datos guardados en localStorage mientras se carga Firestore
+    document.getElementById('conf-name').value = currentUser.name || '';
+    document.getElementById('conf-lastname').value = currentUser.lastname || '';
+    document.getElementById('conf-email').value = currentUser.email || '';
+    const profileImg = document.getElementById('profile-img');
+    if (currentUser.avatar) {
+        profileImg.src = currentUser.avatar;
+    } else if (currentUser.name) {
+        profileImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=2563eb&color=fff&size=150`;
+    }
+
     try {
         const userRef = doc(db, "usuarios", currentUser.email);
         const docSnap = await getDoc(userRef);
         if (docSnap.exists()) {
             const data = docSnap.data();
-            document.getElementById('conf-name').value = data.name || '';
-            document.getElementById('conf-lastname').value = data.lastname || '';
-            document.getElementById('conf-email').value = data.email || '';
-            const profileImg = document.getElementById('profile-img');
-            profileImg.src = data.avatar || `https://ui-avatars.com/api/?name=${data.name}&background=2563eb&color=fff&size=150`;
+            document.getElementById('conf-name').value = data.name || currentUser.name || '';
+            document.getElementById('conf-lastname').value = data.lastname || currentUser.lastname || '';
+            document.getElementById('conf-email').value = data.email || currentUser.email || '';
+            if (data.avatar) {
+                profileImg.src = data.avatar;
+            } else if (data.name) {
+                profileImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name)}&background=2563eb&color=fff&size=150`;
+            }
         }
-    } catch (error) { console.error("Error al cargar:", error); }
+    } catch (error) {
+        console.error("Error al cargar:", error);
+    }
 });
 
 async function updateUserData(newData) {
