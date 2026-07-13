@@ -1,5 +1,71 @@
-import { db } from './db.js';
+import { app, db } from './db.js';
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, OAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+const auth = getAuth(app);
+const adminEmails = ['billybravo93@gmail.com', 'otro.admin@empresa.com'];
+
+async function persistUserProfile(userData) {
+    await setDoc(doc(db, "usuarios", userData.email), {
+        ...userData,
+        provider: userData.provider || 'email'
+    }, { merge: true });
+}
+
+async function authenticateWithProvider(provider, providerName) {
+    try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        const email = user.email || `${user.uid}@${providerName.toLowerCase()}.local`;
+        const name = user.displayName || email.split('@')[0] || providerName;
+        const role = adminEmails.includes(email) ? 'administrador' : 'cliente';
+
+        const profile = {
+            name,
+            email,
+            role,
+            provider: providerName,
+            photoURL: user.photoURL || ''
+        };
+
+        await persistUserProfile(profile);
+        localStorage.setItem('currentUser', JSON.stringify(profile));
+        showToast(`Bienvenido, ${name}`);
+        setTimeout(() => { window.location.href = '/index.html'; }, 1000);
+    } catch (error) {
+        console.error(error);
+        const message = getAuthErrorMessage(error, providerName);
+        showToast(message);
+    }
+}
+
+function getAuthErrorMessage(error, providerName) {
+    const code = error?.code || '';
+
+    switch (code) {
+        case 'auth/popup-closed-by-user':
+            return 'Se cerró la ventana de inicio de sesión.';
+        case 'auth/popup-blocked':
+            return 'El navegador bloqueó la ventana emergente. Permite los pop-ups y vuelve a intentarlo.';
+        case 'auth/unauthorized-domain':
+            return 'Este dominio no está autorizado en Firebase Authentication.';
+        case 'auth/account-exists-with-different-credential':
+            return 'Ya existe una cuenta con otro método de acceso.';
+        default:
+            return `No se pudo conectar con ${providerName}. Revisa tu conexión o habilita el proveedor en Firebase.`;
+    }
+}
+
+function signInWithGoogle() {
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    authenticateWithProvider(provider, 'Google');
+}
+
+function signInWithMicrosoft() {
+    const provider = new OAuthProvider('microsoft.com');
+    authenticateWithProvider(provider, 'Microsoft');
+}
 
 // REGISTRO: Guardamos en Firestore
 async function handleRegister(e) {
@@ -7,9 +73,6 @@ async function handleRegister(e) {
     const name = document.getElementById('reg-name').value;
     const email = document.getElementById('reg-email').value;
     const pass = document.getElementById('reg-pass').value;
-
-    // Lista de correos que quieres que sean administradores
-    const adminEmails = ['billybravo93@gmail.com', 'otro.admin@empresa.com'];
 
     try {
         // Verifica si el email está en la lista de administradores
@@ -85,5 +148,7 @@ function showToast(text) {
 window.handleRegister = handleRegister;
 window.handleLogin = handleLogin;
 window.toggleForm = toggleForm;
-window.togglePassword = togglePassword; // <--- Importante para que el HTML la detecte
+window.togglePassword = togglePassword;
+window.signInWithGoogle = signInWithGoogle;
+window.signInWithMicrosoft = signInWithMicrosoft;
 window.showToast = showToast;
