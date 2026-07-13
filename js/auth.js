@@ -1,10 +1,12 @@
 import { app, db } from './db.js';
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-import { getAuth, GoogleAuthProvider, OAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, OAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, browserLocalPersistence, setPersistence } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
 const auth = getAuth(app);
 const adminEmails = ['billybravo93@gmail.com', 'otro.admin@empresa.com'];
 let socialPendingUser = null;
+
+setPersistence(auth, browserLocalPersistence).catch(() => {});
 
 async function persistUserProfile(userData) {
     await setDoc(doc(db, "usuarios", userData.email), {
@@ -21,43 +23,67 @@ function splitDisplayName(fullName) {
         : { name: parts[0], lastname: parts.slice(1).join(' ') };
 }
 
+async function finishSocialAuth(user, providerName) {
+    const email = user.email;
+    if (!email) {
+        showToast('No se pudo obtener el correo desde el proveedor de acceso.');
+        return;
+    }
+
+    const userRef = doc(db, "usuarios", email);
+    const userSnap = await getDoc(userRef);
+    const role = adminEmails.includes(email) ? 'administrador' : 'cliente';
+    const display = splitDisplayName(user.displayName);
+
+    if (userSnap.exists()) {
+        const existingProfile = userSnap.data();
+        localStorage.setItem('currentUser', JSON.stringify(existingProfile));
+        showToast(`Bienvenido de nuevo, ${existingProfile.name || existingProfile.email}`);
+        setTimeout(() => { window.location.href = '/index.html'; }, 1000);
+        return;
+    }
+
+    socialPendingUser = {
+        email,
+        providerName,
+        role,
+        provider: providerName.toLowerCase(),
+        photoURL: user.photoURL || '',
+        name: display.name,
+        lastname: display.lastname
+    };
+    openSocialSignupModal(socialPendingUser);
+}
+
 async function authenticateWithProvider(provider, providerName) {
     try {
         const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-        const email = user.email;
-        if (!email) {
-            showToast('No se pudo obtener el correo desde el proveedor de acceso.');
-            return;
-        }
-
-        const userRef = doc(db, "usuarios", email);
-        const userSnap = await getDoc(userRef);
-        const role = adminEmails.includes(email) ? 'administrador' : 'cliente';
-        const display = splitDisplayName(user.displayName);
-
-        if (userSnap.exists()) {
-            const existingProfile = userSnap.data();
-            localStorage.setItem('currentUser', JSON.stringify(existingProfile));
-            showToast(`Bienvenido de nuevo, ${existingProfile.name || existingProfile.email}`);
-            setTimeout(() => { window.location.href = '/index.html'; }, 1000);
-            return;
-        }
-
-        socialPendingUser = {
-            email,
-            providerName,
-            role,
-            provider: providerName.toLowerCase(),
-            photoURL: user.photoURL || '',
-            name: display.name,
-            lastname: display.lastname
-        };
-        openSocialSignupModal(socialPendingUser);
+        await finishSocialAuth(result.user, providerName);
     } catch (error) {
         console.error(error);
-        const message = getAuthErrorMessage(error, providerName);
-        showToast(message);
+        if (error?.code === 'auth/popup-blocked' || error?.code === 'auth/popup-closed-by-user' || error?.code === 'auth/operation-not-allowed') {
+            try {
+                await signInWithRedirect(auth, provider);
+            } catch (redirectError) {
+                console.error(redirectError);
+                showToast(getAuthErrorMessage(redirectError, providerName));
+            }
+            return;
+        }
+
+        showToast(getAuthErrorMessage(error, providerName));
+    }
+}
+
+async function handleRedirectAuthResult() {
+    try {
+        const result = await getRedirectResult(auth);
+        if (result?.user) {
+            await finishSocialAuth(result.user, result.providerId?.includes('google') ? 'Google' : 'Microsoft');
+        }
+    } catch (error) {
+        console.error(error);
+        showToast(getAuthErrorMessage(error, 'Google/Microsoft'));
     }
 }
 
@@ -242,3 +268,7 @@ window.completeSocialSignup = completeSocialSignup;
 window.openSocialSignupModal = openSocialSignupModal;
 window.closeSocialSignupModal = closeSocialSignupModal;
 window.showToast = showToast;
+
+window.addEventListener('DOMContentLoaded', () => {
+    handleRedirectAuthResult();
+});
