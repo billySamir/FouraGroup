@@ -131,6 +131,51 @@
 
     </main>
 
+    <div id="social-signup-modal" class="fixed inset-0 z-[400] hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="w-full max-w-xl bg-[#111111] rounded-3xl border border-white/10 p-8 shadow-2xl">
+            <div class="flex items-start justify-between gap-4 mb-6">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.3em] text-gray-500">Registro con</p>
+                    <h2 class="text-3xl font-black tracking-tight text-white">Completa tu perfil</h2>
+                    <p class="text-sm text-gray-400 mt-2">Ingresa tu nombre, apellido y crea una contraseña segura para acceder después.</p>
+                </div>
+                <button type="button" onclick="closeSocialSignupModal()" class="text-gray-400 hover:text-white transition-colors">
+                    <i class="fa-solid fa-xmark text-2xl"></i>
+                </button>
+            </div>
+
+            <form onsubmit="completeSocialSignup(event)" class="space-y-5">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Correo Electrónico</label>
+                    <input type="email" id="social-signup-email" disabled class="w-full bg-black/50 border border-white/10 rounded-xl py-3 px-4 text-sm text-gray-400 cursor-not-allowed">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Nombre</label>
+                        <input type="text" id="social-signup-name" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors" placeholder="Juan">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Apellidos</label>
+                        <input type="text" id="social-signup-lastname" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors" placeholder="Pérez">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Contraseña</label>
+                        <input type="password" id="social-signup-pass" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors" placeholder="••••••••">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Confirmar contraseña</label>
+                        <input type="password" id="social-signup-pass-confirm" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors" placeholder="••••••••">
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-blue-600/20">
+                    Guardar y continuar
+                </button>
+            </form>
+        </div>
+    </div>
+
     <div id="toast"></div>
 
     <footer class="bg-[#050505] py-6 border-t border-white/5 text-center">

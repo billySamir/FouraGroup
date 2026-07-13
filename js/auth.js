@@ -4,6 +4,7 @@ import { getAuth, GoogleAuthProvider, OAuthProvider, signInWithPopup } from "htt
 
 const auth = getAuth(app);
 const adminEmails = ['billybravo93@gmail.com', 'otro.admin@empresa.com'];
+let socialPendingUser = null;
 
 async function persistUserProfile(userData) {
     await setDoc(doc(db, "usuarios", userData.email), {
@@ -12,30 +13,110 @@ async function persistUserProfile(userData) {
     }, { merge: true });
 }
 
+function splitDisplayName(fullName) {
+    if (!fullName) return { name: '', lastname: '' };
+    const parts = fullName.trim().split(/\s+/);
+    return parts.length === 1
+        ? { name: parts[0], lastname: '' }
+        : { name: parts[0], lastname: parts.slice(1).join(' ') };
+}
+
 async function authenticateWithProvider(provider, providerName) {
     try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
-        const email = user.email || `${user.uid}@${providerName.toLowerCase()}.local`;
-        const name = user.displayName || email.split('@')[0] || providerName;
+        const email = user.email;
+        if (!email) {
+            showToast('No se pudo obtener el correo desde el proveedor de acceso.');
+            return;
+        }
+
+        const userRef = doc(db, "usuarios", email);
+        const userSnap = await getDoc(userRef);
         const role = adminEmails.includes(email) ? 'administrador' : 'cliente';
+        const display = splitDisplayName(user.displayName);
 
-        const profile = {
-            name,
+        if (userSnap.exists()) {
+            const existingProfile = userSnap.data();
+            localStorage.setItem('currentUser', JSON.stringify(existingProfile));
+            showToast(`Bienvenido de nuevo, ${existingProfile.name || existingProfile.email}`);
+            setTimeout(() => { window.location.href = '/index.html'; }, 1000);
+            return;
+        }
+
+        socialPendingUser = {
             email,
+            providerName,
             role,
-            provider: providerName,
-            photoURL: user.photoURL || ''
+            provider: providerName.toLowerCase(),
+            photoURL: user.photoURL || '',
+            name: display.name,
+            lastname: display.lastname
         };
-
-        await persistUserProfile(profile);
-        localStorage.setItem('currentUser', JSON.stringify(profile));
-        showToast(`Bienvenido, ${name}`);
-        setTimeout(() => { window.location.href = '/index.html'; }, 1000);
+        openSocialSignupModal(socialPendingUser);
     } catch (error) {
         console.error(error);
         const message = getAuthErrorMessage(error, providerName);
         showToast(message);
+    }
+}
+
+function openSocialSignupModal(user) {
+    document.getElementById('social-signup-provider-label').innerText = user.providerName;
+    document.getElementById('social-signup-email').value = user.email;
+    document.getElementById('social-signup-name').value = user.name || '';
+    document.getElementById('social-signup-lastname').value = user.lastname || '';
+    document.getElementById('social-signup-pass').value = '';
+    document.getElementById('social-signup-pass-confirm').value = '';
+    document.getElementById('social-signup-modal').classList.remove('hidden');
+}
+
+function closeSocialSignupModal() {
+    document.getElementById('social-signup-modal').classList.add('hidden');
+}
+
+async function completeSocialSignup(e) {
+    e.preventDefault();
+    if (!socialPendingUser) {
+        showToast('No hay datos de registro social pendientes.');
+        return;
+    }
+
+    const name = document.getElementById('social-signup-name').value.trim();
+    const lastname = document.getElementById('social-signup-lastname').value.trim();
+    const pass = document.getElementById('social-signup-pass').value;
+    const confirm = document.getElementById('social-signup-pass-confirm').value;
+
+    if (!name || !lastname) {
+        showToast('Ingresa nombre y apellido.');
+        return;
+    }
+    if (!pass || pass.length < 6) {
+        showToast('La contraseña debe tener al menos 6 caracteres.');
+        return;
+    }
+    if (pass !== confirm) {
+        showToast('Las contraseñas no coinciden.');
+        return;
+    }
+
+    const userData = {
+        ...socialPendingUser,
+        name,
+        lastname,
+        pass,
+        createdAt: new Date().toISOString()
+    };
+
+    try {
+        await setDoc(doc(db, "usuarios", userData.email), userData);
+        localStorage.setItem('currentUser', JSON.stringify(userData));
+        showToast('Cuenta creada correctamente. Redirigiendo...');
+        closeSocialSignupModal();
+        setTimeout(() => { window.location.href = '/index.html'; }, 1200);
+    } catch (error) {
+        console.error(error);
+        showToast('Error al guardar datos. Intenta de nuevo.');
     }
 }
 
@@ -157,4 +238,7 @@ window.toggleForm = toggleForm;
 window.togglePassword = togglePassword;
 window.signInWithGoogle = signInWithGoogle;
 window.signInWithMicrosoft = signInWithMicrosoft;
+window.completeSocialSignup = completeSocialSignup;
+window.openSocialSignupModal = openSocialSignupModal;
+window.closeSocialSignupModal = closeSocialSignupModal;
 window.showToast = showToast;
