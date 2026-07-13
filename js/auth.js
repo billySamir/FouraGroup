@@ -71,23 +71,29 @@ function signInWithMicrosoft() {
 async function handleRegister(e) {
     e.preventDefault();
     const name = document.getElementById('reg-name').value;
+    const lastname = document.getElementById('reg-lastname').value;
     const email = document.getElementById('reg-email').value;
     const pass = document.getElementById('reg-pass').value;
 
     try {
-        // Verifica si el email está en la lista de administradores
         const role = adminEmails.includes(email) ? 'administrador' : 'cliente';
 
-        await setDoc(doc(db, "usuarios", email), { 
-            name, 
-            email, 
-            pass, 
-            role 
-        });
+        const userData = {
+            name,
+            lastname,
+            email,
+            pass,
+            role,
+            provider: 'email'
+        };
 
+        await setDoc(doc(db, "usuarios", email), userData);
+
+        localStorage.setItem('currentUser', JSON.stringify(userData));
         showToast("Registro exitoso");
         toggleForm('login');
     } catch (error) {
+        console.error(error);
         showToast("Error en el registro");
     }
 }
