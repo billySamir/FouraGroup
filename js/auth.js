@@ -87,18 +87,39 @@ async function handleRedirectAuthResult() {
     }
 }
 
+// --- FUNCIÓN CORREGIDA ---
 function openSocialSignupModal(user) {
-    document.getElementById('social-signup-provider-label').innerText = user.providerName;
-    document.getElementById('social-signup-email').value = user.email;
-    document.getElementById('social-signup-name').value = user.name || '';
-    document.getElementById('social-signup-lastname').value = user.lastname || '';
-    document.getElementById('social-signup-pass').value = '';
-    document.getElementById('social-signup-pass-confirm').value = '';
-    document.getElementById('social-signup-modal').classList.remove('hidden');
+    const providerLabel = document.getElementById('social-signup-provider-label');
+    const emailInput = document.getElementById('social-signup-email');
+    const nameInput = document.getElementById('social-signup-name');
+    const lastnameInput = document.getElementById('social-signup-lastname');
+    const passInput = document.getElementById('social-signup-pass');
+    const passConfirmInput = document.getElementById('social-signup-pass-confirm');
+    const modal = document.getElementById('social-signup-modal');
+
+    // Validación: Si no existe el HTML del modal, detenemos la ejecución para evitar el error 'Cannot set properties of null'
+    if (!providerLabel || !modal) {
+        console.error("Error: No se encontró el HTML del modal de registro ('social-signup-modal' o 'social-signup-provider-label').");
+        showToast("Falta el diseño del modal de registro en tu HTML.");
+        return; 
+    }
+
+    // Si los elementos existen, asignamos los valores de forma segura
+    providerLabel.innerText = user.providerName;
+    if (emailInput) emailInput.value = user.email;
+    if (nameInput) nameInput.value = user.name || '';
+    if (lastnameInput) lastnameInput.value = user.lastname || '';
+    if (passInput) passInput.value = '';
+    if (passConfirmInput) passConfirmInput.value = '';
+    
+    modal.classList.remove('hidden');
 }
 
 function closeSocialSignupModal() {
-    document.getElementById('social-signup-modal').classList.add('hidden');
+    const modal = document.getElementById('social-signup-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
 }
 
 async function completeSocialSignup(e) {
@@ -236,7 +257,6 @@ function toggleForm(type) {
     else { registerBox.classList.add('hidden'); loginBox.classList.remove('hidden'); }
 }
 
-// --- FUNCIÓN QUE TE FALTABA ---
 function togglePassword(inputId, button) {
     const input = document.getElementById(inputId);
     const icon = button.querySelector('i');
