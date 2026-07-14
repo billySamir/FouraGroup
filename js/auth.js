@@ -79,11 +79,12 @@ async function handleRedirectAuthResult() {
     try {
         const result = await getRedirectResult(auth);
         if (result?.user) {
-            await finishSocialAuth(result.user, result.providerId?.includes('google') ? 'Google' : 'Microsoft');
+            const providerName = result.providerId?.includes('google') ? 'Google' : result.providerId?.includes('github') ? 'GitHub' : 'Social';
+            await finishSocialAuth(result.user, providerName);
         }
     } catch (error) {
         console.error(error);
-        showToast(getAuthErrorMessage(error, 'Google/Microsoft'));
+        showToast(getAuthErrorMessage(error, 'Google/GitHub'));
     }
 }
 
@@ -190,9 +191,9 @@ function signInWithGoogle() {
     authenticateWithProvider(provider, 'Google');
 }
 
-function signInWithMicrosoft() {
-    const provider = new OAuthProvider('microsoft.com');
-    authenticateWithProvider(provider, 'Microsoft');
+function signInWithGitHub() {
+    const provider = new OAuthProvider('github.com');
+    authenticateWithProvider(provider, 'GitHub');
 }
 
 // REGISTRO: Guardamos en Firestore
@@ -283,7 +284,7 @@ window.handleLogin = handleLogin;
 window.toggleForm = toggleForm;
 window.togglePassword = togglePassword;
 window.signInWithGoogle = signInWithGoogle;
-window.signInWithMicrosoft = signInWithMicrosoft;
+window.signInWithGitHub = signInWithGitHub;
 window.completeSocialSignup = completeSocialSignup;
 window.openSocialSignupModal = openSocialSignupModal;
 window.closeSocialSignupModal = closeSocialSignupModal;
