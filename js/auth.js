@@ -98,14 +98,14 @@ function openSocialSignupModal(user) {
     const modal = document.getElementById('social-signup-modal');
 
     // Validación: Si no existe el HTML del modal, detenemos la ejecución para evitar el error 'Cannot set properties of null'
-    if (!providerLabel || !modal) {
-        console.error("Error: No se encontró el HTML del modal de registro ('social-signup-modal' o 'social-signup-provider-label').");
+    if (!modal) {
+        console.error("Error: No se encontró el HTML del modal de registro ('social-signup-modal').");
         showToast("Falta el diseño del modal de registro en tu HTML.");
         return; 
     }
 
     // Si los elementos existen, asignamos los valores de forma segura
-    providerLabel.innerText = user.providerName;
+    if (providerLabel) providerLabel.innerText = user.providerName;
     if (emailInput) emailInput.value = user.email;
     if (nameInput) nameInput.value = user.name || '';
     if (lastnameInput) lastnameInput.value = user.lastname || '';
